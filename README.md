@@ -4,6 +4,8 @@ To _**start**_ bot - evaluate code from `src/bot.js` in browser console.
 
 To _**stop**_ bot - evaluate code from `src/bot-kill.js` in browser console.
 
+##### IMPORTANT
+Disable `Short Numbers OFF` in game settings _(For buildings auto purchaser)_. 
 
 ##### [LAST CHANGES](https://github.com/baylrock/CookieClicker-Bot/commit/6b64cfc1b65f37ee834f5ef875bb7d01599a91f0)
 - [x] auto clicker for `bigCookie` 

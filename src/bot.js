@@ -1,6 +1,6 @@
 var botEvents = [];
 var shop = window.shop = window.shop || window.document.querySelector('#wrapper #game #sectionRight #store');
-(window.prd14 = window.prd14 || shop.querySelector('#product13'));
+(window.prd14 = window.prd14 || shop.querySelector('#product14'));
 (window.prd13 = window.prd13 || shop.querySelector('#product13'));
 (window.prd12 = window.prd12 || shop.querySelector('#product12'));
 (window.prd11 = window.prd11 || shop.querySelector('#product11'));
