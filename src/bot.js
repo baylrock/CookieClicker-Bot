@@ -78,6 +78,7 @@ botEvents.push(setInterval(function () {
             mostProfitable = prdElement;
         }
     }
+    prdElement.onmouseout();
     if (mostProfitable) {
         mostProfitable.click();
     }

@@ -1,8 +1,9 @@
 ## [CookieClicker](http://orteil.dashnet.org/cookieclicker/)-Bot  _V1.0_
 
-To _**start**_ bot - evaluate code from `src/bot.js` in browser console.
+To _**start**_ bot - evaluate code from `src/bot.js` in browser console, or use `src/browser.snippet.start.js` which u can run manually or use as (e.g.) **Chrome** snippet (`Dev Tools->Sources->Snippets`)
 
-To _**stop**_ bot - evaluate code from `src/bot-kill.js` in browser console.
+
+To _**stop**_ bot - evaluate code from `src/bot-kill.js` in browser console, or use `src/browser.snippet.start.js` as **browser** snippet.
 
 ##### IMPORTANT
 Disable `Short Numbers OFF` in game settings _(For buildings auto purchaser)_. 
