@@ -21,24 +21,48 @@ window.prd = window.prd || [
     window.prd6, window.prd7, window.prd8,
     window.prd9, window.prd10, window.prd11,
     window.prd12, window.prd13, window.prd14];
+window.prd_initial_profit = {};
+window.prd_initial_profit[window.prd0.id] = 0.1;
+window.prd_initial_profit[window.prd1.id] = 1.1;
+window.prd_initial_profit[window.prd2.id] = 8;
+window.prd_initial_profit[window.prd3.id] = 47;
+window.prd_initial_profit[window.prd4.id] = 260;
+window.prd_initial_profit[window.prd5.id] = 1400;
+window.prd_initial_profit[window.prd6.id] = 7800;
+window.prd_initial_profit[window.prd7.id] = 44000;
+window.prd_initial_profit[window.prd8.id] = 260000;
+window.prd_initial_profit[window.prd9.id] = 1600000;
+window.prd_initial_profit[window.prd10.id] = 10000000;
+window.prd_initial_profit[window.prd11.id] = 65000000;
+window.prd_initial_profit[window.prd12.id] = 430000000;
+window.prd_initial_profit[window.prd13.id] = 2900000000;
+window.prd_initial_profit[window.prd14.id] = 21000000000;
+
 
 function calcProfit(productId) {
-    productId = '#' + productId;
     try {
         var shop = window.shop = window.shop || window.document.querySelector('#wrapper #game #sectionRight #store');
-        shop.querySelector(productId).onmouseover(); // trigger tooltip
-        var profitPerBuilding = strToNum(window.document.querySelector('#wrapper #game #tooltipAnchor #tooltip .data b').innerHTML);
-        var currentPrice = strToNum(shop.querySelector(productId + ' .content .price').innerHTML);
+        shop.querySelector('#' + productId).onmouseover(); // trigger tooltip
+        var profitPerBuilding = window.prd_initial_profit[productId];
+        try {
+            profitPerBuilding = strToNum(window.document.querySelector('#wrapper #game #tooltipAnchor #tooltip .data b').innerHTML);
+        } catch (e) {}
+        var currentPrice = strToNum(shop.querySelector('#' + productId + ' .content .price').innerHTML);
 
         var pricePerOneProfitCookie = Number((currentPrice / profitPerBuilding).toFixed(5));
 
         var cps = strToNum((window.sectionLeft = window.sectionLeft || window.document.querySelector('#wrapper #game #sectionLeft')).querySelector('#cookies div').innerHTML.split(' ')[3]);
-        var cuurentValue = strToNum((window.sectionLeft = window.sectionLeft || window.document.querySelector('#wrapper #game #sectionLeft')).querySelector('#cookies').innerHTML.split('<br>')[0]);
+        var valueHtml = (window.sectionLeft = window.sectionLeft || window.document.querySelector('#wrapper #game #sectionLeft')).querySelector('#cookies').innerHTML;
+        var currentValue = valueHtml.split('<br>')[0];
+        if (currentValue === valueHtml) {
+            currentValue = valueHtml.split(' ')[0];
+        }
+        currentValue = strToNum(currentValue);
 
-        var seccondsToBuy = (currentPrice - cuurentValue) / cps;
-        if (seccondsToBuy <= 1) seccondsToBuy = 1;
+        var secondsToBuy = (currentPrice - currentValue) / cps;
+        if (secondsToBuy <= 1) secondsToBuy = 1;
 
-        return seccondsToBuy * pricePerOneProfitCookie;
+        return secondsToBuy * pricePerOneProfitCookie;
     } catch (e) {
         return Number.POSITIVE_INFINITY;
     }
@@ -82,7 +106,7 @@ botEvents.push(setInterval(function () {
     if (mostProfitable) {
         mostProfitable.click();
     }
-}, 2000));
+}, 500));
 
 // auto upgrade shop
 botEvents.push(setInterval(function () {
