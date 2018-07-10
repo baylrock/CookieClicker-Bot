@@ -1,4 +1,4 @@
-if (CCBot) {
-    CCBot.shutdown()
+if (botInst) {
+    botInst.shutdown()
 }
 
