@@ -1,118 +1,144 @@
-var botEvents = [];
-var shop = window.shop = window.shop || window.document.querySelector('#wrapper #game #sectionRight #store');
-(window.prd14 = window.prd14 || shop.querySelector('#product14'));
-(window.prd13 = window.prd13 || shop.querySelector('#product13'));
-(window.prd12 = window.prd12 || shop.querySelector('#product12'));
-(window.prd11 = window.prd11 || shop.querySelector('#product11'));
-(window.prd10 = window.prd10 || shop.querySelector('#product10'));
-(window.prd9 = window.prd9 || shop.querySelector('#product9'));
-(window.prd8 = window.prd8 || shop.querySelector('#product8'));
-(window.prd7 = window.prd7 || shop.querySelector('#product7'));
-(window.prd6 = window.prd6 || shop.querySelector('#product6'));
-(window.prd5 = window.prd5 || shop.querySelector('#product5'));
-(window.prd4 = window.prd4 || shop.querySelector('#product4'));
-(window.prd3 = window.prd3 || shop.querySelector('#product3'));
-(window.prd2 = window.prd2 || shop.querySelector('#product2'));
-(window.prd1 = window.prd1 || shop.querySelector('#product1'));
-(window.prd0 = window.prd0 || shop.querySelector('#product0'));
-window.prd = window.prd || [
-    window.prd0, window.prd1, window.prd2,
-    window.prd3, window.prd4, window.prd5,
-    window.prd6, window.prd7, window.prd8,
-    window.prd9, window.prd10, window.prd11,
-    window.prd12, window.prd13, window.prd14];
-window.prd_initial_profit = {};
-window.prd_initial_profit[window.prd0.id] = 0.1;
-window.prd_initial_profit[window.prd1.id] = 1.1;
-window.prd_initial_profit[window.prd2.id] = 8;
-window.prd_initial_profit[window.prd3.id] = 47;
-window.prd_initial_profit[window.prd4.id] = 260;
-window.prd_initial_profit[window.prd5.id] = 1400;
-window.prd_initial_profit[window.prd6.id] = 7800;
-window.prd_initial_profit[window.prd7.id] = 44000;
-window.prd_initial_profit[window.prd8.id] = 260000;
-window.prd_initial_profit[window.prd9.id] = 1600000;
-window.prd_initial_profit[window.prd10.id] = 10000000;
-window.prd_initial_profit[window.prd11.id] = 65000000;
-window.prd_initial_profit[window.prd12.id] = 430000000;
-window.prd_initial_profit[window.prd13.id] = 2900000000;
-window.prd_initial_profit[window.prd14.id] = 21000000000;
+function CCBot() {
+    var self = this;
+
+    var botEvents = [];
+    var bigCookieBtn = null;
+    var goldenCookiesHolder = null;
+    var productsListId = null;
+    var initialized = false;
 
 
-function calcProfit(productId) {
-    try {
-        var shop = window.shop = window.shop || window.document.querySelector('#wrapper #game #sectionRight #store');
-        shop.querySelector('#' + productId).onmouseover(); // trigger tooltip
-        var profitPerBuilding = window.prd_initial_profit[productId];
+
+    var bigCookieClickRate = 100;
+    var goldenCookieClickRate = 500;
+    var buyBuildingRate = 500;
+    var buyUpgradeRateRate = 10000;
+
+
+    this.init = function () {
+        if (initialized) {
+            console.log("CCBot Already initialized");
+            return;
+        }
         try {
-            profitPerBuilding = strToNum(window.document.querySelector('#wrapper #game #tooltipAnchor #tooltip .data b').innerHTML);
-        } catch (e) {}
-        var currentPrice = strToNum(shop.querySelector('#' + productId + ' .content .price').innerHTML);
+            bigCookieBtn = window.document.querySelector('#wrapper #game #sectionLeft #cookieAnchor #bigCookie');
+            goldenCookiesHolder = window.document.querySelector('#wrapper #game #shimmers');
+            productsListId = [
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
+            ];
+            initialized = true;
 
-        var pricePerOneProfitCookie = Number((currentPrice / profitPerBuilding).toFixed(5));
-
-        var cps = strToNum((window.sectionLeft = window.sectionLeft || window.document.querySelector('#wrapper #game #sectionLeft')).querySelector('#cookies div').innerHTML.split(' ')[3]);
-        var valueHtml = (window.sectionLeft = window.sectionLeft || window.document.querySelector('#wrapper #game #sectionLeft')).querySelector('#cookies').innerHTML;
-        var currentValue = valueHtml.split('<br>')[0];
-        if (currentValue === valueHtml) {
-            currentValue = valueHtml.split(' ')[0];
+            this.fireBotEvents();
+        } catch (e) {
+            console.log("Initialization failed.", e);
+            this.shutdown();
         }
-        currentValue = strToNum(currentValue);
+    };
 
-        var secondsToBuy = (currentPrice - currentValue) / cps;
-        if (secondsToBuy <= 1) secondsToBuy = 1;
 
-        return secondsToBuy * pricePerOneProfitCookie;
-    } catch (e) {
-        return Number.POSITIVE_INFINITY;
-    }
+    this.shutdown = function () {
+        for (var botEvent of botEvents) {
+            clearInterval(botEvent)
+        }
+        initialized = false;
+    };
+
+    this.calcProfit = function (productId) {
+        try {
+            var building = Game.ObjectsById[productId];
+            var profitPerBuilding = building.cps(building);
+            if (!profitPerBuilding || profitPerBuilding === 0) {
+                profitPerBuilding = building.baseCps;
+            }
+
+            var currentPrice = building.price;
+
+            var pricePerOneProfitCookie = Number((currentPrice / profitPerBuilding).toFixed(5));
+
+            var cps = Game.cookiesPs;
+            var currentValue = Game.cookies;
+
+            let secondsToBuy = (currentPrice - currentValue) / cps;
+            var secondsToBuy_Normalized = secondsToBuy * 0.002;
+            if (secondsToBuy_Normalized <= 1) secondsToBuy_Normalized = 1;
+
+            return secondsToBuy_Normalized * pricePerOneProfitCookie;
+        } catch (e) {
+            return Number.POSITIVE_INFINITY;
+        }
+    };
+    this.bigCookieClick = function () {
+        bigCookieBtn.click();
+    };
+    this.goldenCookieClick = function () {
+        var goldenCookie = goldenCookiesHolder.querySelector('.shimmer');
+        if (goldenCookie) {
+            goldenCookie.click();
+        }
+    };
+    this.buyBuilding = function (self) {
+        var min = Number.POSITIVE_INFINITY;
+        var mostProfitable = null;
+        for (var id of productsListId) {
+            var value = self.calcProfit(id);
+            if (value < min) {
+                min = value;
+                mostProfitable = id;
+            }
+        }
+        if (mostProfitable) {
+            Game.ObjectsById[mostProfitable].buy();
+        }
+    };
+    this.buyUpgrade = function () {
+        var upgrade = Game.UpgradesInStore[0];
+        if (upgrade && upgrade.canBuy()) {
+            upgrade.buy()
+        }
+    };
+    this.fireBotEvents = function () {
+        if (!initialized) {
+            throw "Can't start bot while it is not initialized!"
+        }
+        this.pushEvent(this.bigCookieClick, bigCookieClickRate);
+
+        this.pushEvent(this.goldenCookieClick, goldenCookieClickRate);
+
+        this.pushEvent(function () {
+            self.buyBuilding(self)
+        }, buyBuildingRate);
+
+        this.pushEvent(this.buyUpgrade, buyUpgradeRateRate);
+    };
+    this.pushEvent = function (event, interval) {
+        botEvents.push(setInterval(event, interval || 0));
+    };
+
+    this.setBigCookieClickRate = function(rate) {
+        bigCookieClickRate = rate || bigCookieClickRate === 0 || bigCookieClickRate;
+        this.shutdown();
+        this.init()
+    };
+
+    this.setGoldenCookieClickRate = function(rate) {
+        goldenCookieClickRate = rate || goldenCookieClickRate === 0 ||  goldenCookieClickRate;
+        this.shutdown();
+        this.init()
+    };
+
+    this.setBuyBuildingRate = function(rate) {
+        buyBuildingRate = rate || buyBuildingRate === 0 ||  buyBuildingRate;
+        this.shutdown();
+        this.init()
+    };
+    this.setBuyUpgradeRate = function(rate) {
+        buyUpgradeRateRate = rate || buyUpgradeRateRate === 0 ||  buyUpgradeRateRate;
+        this.shutdown();
+        this.init()
+    };
+
 }
 
-function strToNum(str) {
-    var numStr = "";
-    for (var string of str.split(',')) {
-        numStr = numStr + string;
-    }
-    return Number(numStr);
-}
+(botInst = new CCBot()).init();
+// botInst.shutdown();
 
-// auto clicker
-botEvents.push(setInterval(function () {
-    (window.bigCookieBtn = window.bigCookieBtn || window.document.querySelector('#wrapper #game #sectionLeft #cookieAnchor #bigCookie')).click();
-}, 0));
-
-
-botEvents.push(setInterval(function () {
-    var goldenCookiesHolder = window.goldenCookiesHolder = window.goldenCookiesHolder || window.document.querySelector('#wrapper #game #shimmers');
-    var goldenCookie = goldenCookiesHolder.querySelector('.shimmer');
-    if (goldenCookie) {
-        goldenCookie.click();
-    }
-}, 500));
-
-
-// auto shop
-botEvents.push(setInterval(function () {
-    var min = Number.POSITIVE_INFINITY;
-    var mostProfitable = null;
-    for (var prdElement of window.prd) {
-        var value = calcProfit(prdElement.id);
-        if (value < min) {
-            min = value;
-            mostProfitable = prdElement;
-        }
-    }
-    prdElement.onmouseout();
-    if (mostProfitable) {
-        mostProfitable.click();
-    }
-}, 500));
-
-// auto upgrade shop
-botEvents.push(setInterval(function () {
-    var upgradesShop = window.upgradesShop = window.upgradesShop || window.document.querySelector('#wrapper #game #sectionRight #store #upgrades');
-    var upgrade = upgradesShop.querySelector('#upgrade0');
-    if (upgrade) {
-        upgrade.click()
-    }
-}, 10000));

@@ -3,12 +3,10 @@ rawFile.open("GET", 'https://raw.githubusercontent.com/baylrock/CookieClicker-Bo
 rawFile.onreadystatechange = function () {
     if (rawFile.readyState === 4) {
         if (rawFile.status === 200 || rawFile.status === 0) {
-            var imported = document.createElement('script');
-            imported.innerHTML = rawFile.responseText;
-            document.head.appendChild(imported);
+            eval(rawFile.responseText);
             return
         }
     }
-    console.log("Bot initialization failed");
+    throw "Bot initialization failed";
 };
 rawFile.send(null);
