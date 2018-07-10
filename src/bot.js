@@ -86,7 +86,7 @@ function CCBot() {
                 mostProfitable = id;
             }
         }
-        if (mostProfitable) {
+        if (mostProfitable || mostProfitable === 0) {
             Game.ObjectsById[mostProfitable].buy();
         }
     };
