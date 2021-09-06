@@ -64,7 +64,8 @@ function CCBot() {
 
             return secondsToBuy_Normalized * pricePerOneProfitCookie;
         } catch (e) {
-            return Number.POSITIVE_INFINITY;
+            console.error(e)
+            return 0;
         }
     };
     this.bigCookieClick = function () {
@@ -77,11 +78,11 @@ function CCBot() {
         }
     };
     this.buyBuilding = function (self) {
-        var min = Number.POSITIVE_INFINITY;
+        var min = 0;
         var mostProfitable = null;
         for (var id of productsListId) {
             var value = self.calcProfit(id);
-            if (value < min) {
+            if (value > min) {
                 min = value;
                 mostProfitable = id;
             }
