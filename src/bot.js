@@ -91,7 +91,7 @@ function CCBot() {
         }
     };
 
-    var ignoreUpgrades = [182, 183, 184, 185, 209, 331, 333, 414]
+    var ignoreUpgrades = [182, 183, 184, 185, 209, 331, 333, 414, 361]
     this.buyUpgrade = function () {
         var upgrade = Game.UpgradesInStore[0];
 
