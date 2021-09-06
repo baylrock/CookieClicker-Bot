@@ -90,12 +90,18 @@ function CCBot() {
             Game.ObjectsById[mostProfitable].buy();
         }
     };
+
+    var ignoreUpgrades = [182, 183, 184, 185, 209, 331, 333, 414]
     this.buyUpgrade = function () {
         var upgrade = Game.UpgradesInStore[0];
-        if (upgrade && upgrade.canBuy()) {
-            upgrade.buy()
-        }
+
+        Game.UpgradesInStore.forEach(u => {
+            if (u.canBuy() && ignoreUpgrades.indexOf(u.id) === -1) {
+                u.buy()
+            }
+        })
     };
+
     this.fireBotEvents = function () {
         if (!initialized) {
             throw "Can't start bot while it is not initialized!"
